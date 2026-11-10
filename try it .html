@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSphere - Earth Day & Sustainability Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- JavaScript Navigation & Interactive Functions -->
+    <script>
+        function navigateTo(pageId) {
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(sec => sec.classList.add('hidden'));
+
+            const target = document.getElementById('page-' + pageId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        function calculateCarbon() {
+            const elecInput = document.getElementById('calc-elec');
+            const travelInput = document.getElementById('calc-travel');
+            const elec = elecInput ? parseFloat(elecInput.value) || 0 : 0;
+            const travel = travelInput ? parseFloat(travelInput.value) || 0 : 0;
+            
+            const total = ((elec * 0.5) + (travel * 4 * 0.2)).toFixed(2);
+            
+            const resEl = document.getElementById('calc-result');
+            const tipEl = document.getElementById('calc-tip');
+            if (resEl) resEl.innerText = `${total} kg CO₂`;
+            if (tipEl) tipEl.innerText = total > 150 ? 'Your carbon footprint is quite high! Consider reducing electricity usage.' : 'Your carbon footprint is at a good level.';
+        }
+
+        function submitQuiz() {
+            const answers = { q1: 'A', q2: 'B', q3: 'B', q4: 'A' };
+            let score = 0;
+            const form = document.getElementById('quiz-form');
+            if (!form) return;
+            
+            if (form.q1 && form.q1.value === answers.q1) score++;
+            if (form.q2 && form.q2.value === answers.q2) score++;
+            if (form.q3 && form.q3.value === answers.q3) score++;
+            if (form.q4 && form.q4.value === answers.q4) score++;
+
+            const resultDiv = document.getElementById('quiz-result');
+            if (resultDiv) {
+                resultDiv.classList.remove('hidden', 'bg-emerald-900/50', 'border-emerald-500', 'bg-amber-900/50', 'border-amber-500', 'text-emerald-300', 'text-amber-300');
+
+                if (score === 4) {
+                    resultDiv.classList.add('bg-emerald-900/50', 'border-emerald-500', 'text-emerald-300');
+                    resultDiv.innerText = `Congratulations! Your Score: ${score}/4 (Excellent! All answers correct)`;
+                } else {
+                    resultDiv.classList.add('bg-amber-900/50', 'border-amber-500', 'text-amber-300');
+                    resultDiv.innerText = `Your Score: ${score}/4. Try again to achieve a full score!`;
+                }
+            }
+        }
+
+        function handleContact(e) {
+            e.preventDefault();
+            alert('Your message has been sent successfully! Thank you.');
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header & Navigation -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="bg-emerald-600 p-2 rounded-lg text-white">
+                        <i class="fa-solid fa-earth-americas text-xl"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-wide text-emerald-400">EcoSphere</span>
+                </div>
+                <nav class="hidden lg:flex space-x-1">
+                    <button onclick="navigateTo('home')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">Home</button>
+                    <button onclick="navigateTo('about')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">About</button>
+                    <button onclick="navigateTo('history')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">History</button>
+                    <button onclick="navigateTo('issues')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">Issues</button>
+                    <button onclick="navigateTo('practices')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">Practices</button>
+                    <button onclick="navigateTo('calculator')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">Calculator</button>
+                    <button onclick="navigateTo('quiz')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">Quiz</button>
+                    <button onclick="navigateTo('diy')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">DIY</button>
+                    <button onclick="navigateTo('contact')" class="px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-700">Contact</button>
+                </nav>
+                <div class="lg:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white p-2">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Navigation Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-slate-800 border-b border-slate-700 px-4 pt-2 pb-4 space-y-1">
+            <button onclick="navigateTo('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">Home</button>
+            <button onclick="navigateTo('about'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">About</button>
+            <button onclick="navigateTo('history'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">History</button>
+            <button onclick="navigateTo('issues'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">Issues</button>
+            <button onclick="navigateTo('practices'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">Practices</button>
+            <button onclick="navigateTo('calculator'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">Calculator</button>
+            <button onclick="navigateTo('quiz'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">Quiz</button>
+            <button onclick="navigateTo('diy'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">DIY</button>
+            <button onclick="navigateTo('contact'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300">Contact</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- 1. HOME PAGE -->
+        <section id="page-home" class="page-section space-y-8">
+            <div class="text-center py-12 bg-gradient-to-r from-emerald-900/40 to-teal-900/40 rounded-2xl border border-emerald-500/20 p-8 shadow-xl">
+                <span class="bg-emerald-500/10 text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">UniKL MICET Student Mini Project</span>
+                <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight mt-4 mb-6">Invest in Our <span class="text-emerald-400">Planet</span></h1>
+                <p class="max-w-2xl mx-auto text-lg text-slate-300 mb-8">Welcome to EcoSphere — your comprehensive digital portal dedicated to environmental awareness, sustainable practices, and climate action for Earth Day.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="navigateTo('issues')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition">Explore Issues</button>
+                    <button onclick="navigateTo('quiz')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 font-semibold px-6 py-3 rounded-xl transition">Take Eco Quiz</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl">
+                    <i class="fa-solid fa-seedling text-emerald-400 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Sustainability Education</h3>
+                    <p class="text-slate-400 text-sm">Providing comprehensive information and resources on eco-friendly practices for students and the community.</p>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl">
+                    <i class="fa-solid fa-calculator text-emerald-400 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Carbon Calculator</h3>
+                    <p class="text-slate-400 text-sm">Estimate your monthly CO₂ emissions based on daily energy consumption and travel habits.</p>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl">
+                    <i class="fa-solid fa-recycle text-emerald-400 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">DIY & 3R Projects</h3>
+                    <p class="text-slate-400 text-sm">Step-by-step guides to upcycling and recycling household materials creatively.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. ABOUT PAGE -->
+        <section id="page-about" class="page-section hidden space-y-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-4">About EcoSphere</h2>
+                <p class="text-slate-300 leading-relaxed mb-6">EcoSphere was developed as a mini project assignment for the course <strong>CFP0503 Introduction to Information Technology</strong> at <strong>UniKL MICET</strong>. The primary mission of this portal is to foster environmental awareness among students, faculty, and the public while promoting sustainable lifestyle habits.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                        <h4 class="text-emerald-400 font-bold mb-2">Project Objectives</h4>
+                        <ul class="list-disc list-inside text-slate-300 text-sm space-y-2">
+                            <li>Enhance teamwork and basic web development skills (HTML, CSS, JS).</li>
+                            <li>Serve as a central resource hub for Earth Day initiatives.</li>
+                            <li>Offer interactive digital tools like quizzes and carbon calculators.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                        <h4 class="text-emerald-400 font-bold mb-2">Course Information</h4>
+                        <p class="text-slate-300 text-sm"><strong>Course Code:</strong> CFP0503 Introduction to IT</p>
+                        <p class="text-slate-300 text-sm"><strong>Institution:</strong> Universiti Kuala Lumpur (UniKL MICET)</p>
+                        <p class="text-slate-300 text-sm"><strong>Session:</strong> 2026</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. HISTORY PAGE -->
+        <section id="page-history" class="page-section hidden space-y-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-4">History of Earth Day</h2>
+                <p class="text-slate-300 leading-relaxed mb-6">First celebrated on <strong>April 22, 1970</strong> in the United States, Earth Day was founded by Senator Gaylord Nelson following the massive 1969 Santa Barbara oil spill to raise environmental consciousness.</p>
+                
+                <div class="space-y-6 border-l-2 border-emerald-500 pl-6">
+                    <div>
+                        <span class="text-emerald-400 font-bold text-sm">1970</span>
+                        <h4 class="text-lg font-bold text-white">The Birth of the Modern Movement</h4>
+                        <p class="text-slate-400 text-sm">20 million Americans took to the streets to demonstrate for environmental protection, leading to landmark environmental legislation.</p>
+                    </div>
+                    <div>
+                        <span class="text-emerald-400 font-bold text-sm">1990</span>
+                        <h4 class="text-lg font-bold text-white">Going Global</h4>
+                        <p class="text-slate-400 text-sm">Earth Day mobilized 200 million people across 141 countries, bringing recycling and climate protection to the global stage.</p>
+                    </div>
+                    <div>
+                        <span class="text-emerald-400 font-bold text-sm">Present</span>
+                        <h4 class="text-lg font-bold text-white">World's Largest Environmental Event</h4>
+                        <p class="text-slate-400 text-sm">Observed annually by over 1 billion people in 193+ countries to demand climate action and sustainable policies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ISSUES PAGE -->
+        <section id="page-issues" class="page-section hidden space-y-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-6">Key Environmental Issues</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                        <i class="fa-solid fa-temperature-arrow-up text-amber-400 text-3xl mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">1. Climate Change & Global Warming</h3>
+                        <p class="text-slate-300 text-sm">Rising greenhouse gas emissions (CO₂) from fossil fuel combustion trap heat in the atmosphere, driving extreme weather and melting polar ice caps.</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                        <i class="fa-solid fa-bottle-water text-blue-400 text-3xl mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">2. Plastic Pollution</h3>
+                        <p class="text-slate-300 text-sm">Over 8 million metric tons of plastic waste enter oceans annually. Microplastics contaminate food chains and endanger marine biodiversity.</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                        <i class="fa-solid fa-tree text-emerald-400 text-3xl mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">3. Deforestation</h3>
+                        <p class="text-slate-300 text-sm">Clearing forests for agriculture and urban development destroys wildlife habitats and significantly reduces Earth's carbon absorption capacity.</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                        <i class="fa-solid fa-smog text-purple-400 text-3xl mb-3"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">4. Air Pollution</h3>
+                        <p class="text-slate-300 text-sm">Vehicle emissions and industrial waste degrade ambient air quality, posing severe respiratory health risks in urban areas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. PRACTICES PAGE -->
+        <section id="page-practices" class="page-section hidden space-y-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-6">Sustainable Lifestyle Practices</h2>
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-4 bg-slate-900/60 p-4 rounded-xl border border-slate-700">
+                        <div class="bg-emerald-600/20 text-emerald-400 p-3 rounded-lg"><i class="fa-solid fa-recycle text-xl"></i></div>
+                        <div>
+                            <h4 class="font-bold text-white">The 3R Concept (Reduce, Reuse, Recycle)</h4>
+                            <p class="text-slate-300 text-sm">Minimize single-use items, repurpose existing containers, and properly sort recyclable waste into designated bins.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4 bg-slate-900/60 p-4 rounded-xl border border-slate-700">
+                        <div class="bg-emerald-600/20 text-emerald-400 p-3 rounded-lg"><i class="fa-solid fa-bolt text-xl"></i></div>
+                        <div>
+                            <h4 class="font-bold text-white">Energy Conservation</h4>
+                            <p class="text-slate-300 text-sm">Turn off lights and appliances when not in use. Upgrade to energy-efficient LED bulbs and smart power strips.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4 bg-slate-900/60 p-4 rounded-xl border border-slate-700">
+                        <div class="bg-emerald-600/20 text-emerald-400 p-3 rounded-lg"><i class="fa-solid fa-bus text-xl"></i></div>
+                        <div>
+                            <h4 class="font-bold text-white">Green Transportation</h4>
+                            <p class="text-slate-300 text-sm">Opt for walking, cycling, carpooling, or public transit to significantly lower your personal transport carbon footprint.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. CALCULATOR PAGE -->
+        <section id="page-calculator" class="page-section hidden space-y-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-2">Carbon Footprint Calculator</h2>
+                <p class="text-slate-300 mb-6">Estimate your monthly carbon dioxide (CO₂) emissions based on your lifestyle choices.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Monthly Electricity Usage (kWh)</label>
+                            <input type="number" id="calc-elec" value="150" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Vehicle Distance Travelled (KM/week)</label>
+                            <input type="number" id="calc-travel" value="50" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                        </div>
+                        <button onclick="calculateCarbon()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition">Calculate Footprint</button>
+                    </div>
+
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700 flex flex-col justify-center items-center text-center">
+                        <i class="fa-solid fa-leaf text-emerald-400 text-4xl mb-3"></i>
+                        <h4 class="text-slate-300 text-sm font-medium mb-1">Your Monthly Carbon Estimate:</h4>
+                        <div id="calc-result" class="text-3xl font-extrabold text-emerald-400 mb-2">0.00 kg CO₂</div>
+                        <p id="calc-tip" class="text-xs text-slate-400">Enter values above and click "Calculate Footprint".</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. QUIZ PAGE -->
+        <section id="page-quiz" class="page-section hidden space-y-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-2">Interactive Environmental Quiz</h2>
+                <p class="text-slate-300 mb-6">Test your knowledge on Earth Day facts and sustainability!</p>
+                
+                <form id="quiz-form" class="space-y-6">
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-700">
+                        <p class="font-semibold text-slate-100 mb-3">1. On which date is international Earth Day celebrated each year?</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q1" value="A" class="accent-emerald-500"> <span>A) April 22</span></label>
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q1" value="B" class="accent-emerald-500"> <span>B) June 5</span></label>
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q1" value="C" class="accent-emerald-500"> <span>C) September 16</span></label>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-700">
+                        <p class="font-semibold text-slate-100 mb-3">2. What does the 3R waste management hierarchy stand for?</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q2" value="A" class="accent-emerald-500"> <span>A) Read, React, Respond</span></label>
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q2" value="B" class="accent-emerald-500"> <span>B) Reduce, Reuse, Recycle</span></label>
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q2" value="C" class="accent-emerald-500"> <span>C) Remove, Replace, Restore</span></label>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-700">
+                        <p class="font-semibold text-slate-100 mb-3">3. Which primary greenhouse gas is emitted from burning fossil fuels?</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q3" value="A" class="accent-emerald-500"> <span>A) Oxygen</span></label>
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q3" value="B" class="accent-emerald-500"> <span>B) Carbon Dioxide (CO₂)</span></label>
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q3" value="C" class="accent-emerald-500"> <span>C) Helium</span></label>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-700">
+                        <p class="font-semibold text-slate-100 mb-3">4. In which country was the first Earth Day organized in 1970?</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q4" value="A" class="accent-emerald-500"> <span>A) United States</span></label>
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q4" value="B" class="accent-emerald-500"> <span>B) Japan</span></label>
+                            <label class="flex items-center space-x-3 cursor-pointer p-2 rounded hover:bg-slate-800"><input type="radio" name="q4" value="C" class="accent-emerald-500"> <span>C) United Kingdom</span></label>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="submitQuiz()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl transition">Submit & Check Answers</button>
+                </form>
+
+                <div id="quiz-result" class="hidden mt-6 p-4 rounded-xl border text-lg font-bold"></div>
+            </div>
+        </section>
+
+        <!-- 8. DIY PROJECTS PAGE -->
+        <section id="page-diy" class="page-section hidden space-y-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-6">Eco-Friendly DIY Projects</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-faucet-drip text-emerald-400 mr-2"></i>Plastic Bottle Self-Watering System</h3>
+                        <p class="text-slate-300 text-sm mb-3">Upcycle plastic bottles into an automated drip irrigation mechanism for potted houseplants.</p>
+                        <ol class="list-decimal list-inside text-xs text-slate-400 space-y-1">
+                            <li>Clean plastic bottle and remove all labels.</li>
+                            <li>Puncture small holes into the bottle cap.</li>
+                            <li>Fill with water and insert inverted into plant soil.</li>
+                        </ol>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+                        <h3 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-box-open text-emerald-400 mr-2"></i>Kitchen Waste Organic Composting</h3>
+                        <p class="text-slate-300 text-sm mb-3">Convert fruit peels and vegetable scraps into nutrient-rich natural fertilizer at home.</p>
+                        <ol class="list-decimal list-inside text-xs text-slate-400 space-y-1">
+                            <li>Collect raw organic kitchen waste.</li>
+                            <li>Mix with dry leaves and soil in a ventilated bin.</li>
+                            <li>Decompose for 4-6 weeks into rich organic compost.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. CONTACT PAGE -->
+        <section id="page-contact" class="page-section hidden space-y-8">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-2xl mx-auto">
+                <h2 class="text-3xl font-bold text-emerald-400 mb-2">Contact Us</h2>
+                <p class="text-slate-300 mb-6">Have questions or suggestions regarding this project? Send us your message below.</p>
+                <form onsubmit="handleContact(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Full Name</label>
+                        <input type="text" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
+                        <input type="email" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Message</label>
+                        <textarea rows="4" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white"></textarea>
+                    </div>
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl transition">Send Message</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 border-t border-slate-700 py-6 text-center text-sm text-slate-400 mt-auto">
+        <p>&copy; 2026 EcoSphere. UniKL MICET Mini Project. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
